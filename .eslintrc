@@ -23,6 +23,8 @@
   "rules": {
     "semi": 0,
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-    "import/prefer-default-export": 0
+    "import/prefer-default-export": 0,
+    "jsx-a11y/media-has-caption": 0,
+    "react/require-default-props": 0
   }
 }
