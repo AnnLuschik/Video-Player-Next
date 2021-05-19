@@ -21,9 +21,8 @@ function App() {
 
   return (
     <Container>
-      <VideoPlayer url={videoUrl} />
+      {responseData ? <VideoPlayer url={videoUrl} /> : null}
     </Container>
-
   );
 }
 

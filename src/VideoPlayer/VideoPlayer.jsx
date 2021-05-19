@@ -60,7 +60,7 @@ export const VideoPlayer = React.memo(({ url }) => {
         <ViewControls>
           {isPlaying ? <PauseButton onClick={pause} /> : <PlayButton onClick={play} />}
           <PlayFromStartButton onClick={playFromStart} />
-          <DurationText>{`${formatTime(currentTime)} / ${formatTime(playerRef.current?.duration)}`}</DurationText>
+          <DurationText isVisible={playerRef.current?.duration}>{`${formatTime(currentTime)} / ${formatTime(playerRef.current?.duration)}`}</DurationText>
         </ViewControls>
         <CommonControls>
           <VolumeButton onClick={changeVolume} />
@@ -107,4 +107,5 @@ const CommonControls = styled.div`
 const DurationText = styled.p`
   margin-left: 5px;
   color: #ffffff;
+  visibility: ${(props) => (props.isVisible ? 'visible' : 'hidden')}
 `;
