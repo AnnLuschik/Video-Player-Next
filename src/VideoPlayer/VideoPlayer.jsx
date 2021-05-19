@@ -78,7 +78,7 @@ VideoPlayer.propTypes = {
 const VideoContainer = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 350px;
+  min-width: 320px;
 `;
 
 const StyledVideo = styled.video`
@@ -93,13 +93,11 @@ const Controls = styled.div`
 `;
 
 const ViewControls = styled.div`
-  min-width: 25%;
   display: flex;
   justify-content: space-between;
 `;
 
 const CommonControls = styled.div`
-  min-width: 10%;
   display: flex;
   justify-content: space-between;
 `;
