@@ -12,7 +12,7 @@ const VolumeButton = ({ onClick }) => {
 
   return (
     <Container>
-      <StyledInput type="range" min={0} max={1} step={0.1} onChange={(e) => setVolume(e.target.value)} onClick={onClickHandler} />
+      <StyledInput type="range" min={0} max={1} step={0.1} onChange={(e) => setVolume(e.target.value)} onMouseMove={onClickHandler} />
       <StyledButton
         bcg={volume < 0.1
           ? noVolumeIcon
@@ -32,7 +32,7 @@ const Container = styled.div`
 `;
 
 const StyledButton = styled.div`
-  width: 25px;
+  width: 22px;
   height: 22px;
   margin: 0 5px;
   background: url(${(props) => props.bcg});

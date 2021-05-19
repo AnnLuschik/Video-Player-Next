@@ -45,6 +45,12 @@ export const VideoPlayer = React.memo(({ url }) => {
     playerRef.current.volume = value;
   }, []);
 
+  const changeCurrentPlaybackPosition = useCallback((value) => {
+    const newTime = (value / playerRef.current.offsetWidth) * playerRef.current.duration;
+    setCurrentTime(newTime);
+    playerRef.current.currentTime = newTime;
+  }, []);
+
   return (
     <VideoContainer>
       <StyledVideo
@@ -55,12 +61,15 @@ export const VideoPlayer = React.memo(({ url }) => {
         onPause={() => setIsPlaying(false)}
         onPlay={() => setIsPlaying(true)}
       />
-      <ProgressBar completed={(currentTime / playerRef.current?.duration) * 100} />
       <Controls>
+        <ProgressBar
+          completed={(currentTime / playerRef.current?.duration) * 100 || 0}
+          onClick={changeCurrentPlaybackPosition}
+        />
         <ViewControls>
           {isPlaying ? <PauseButton onClick={pause} /> : <PlayButton onClick={play} />}
           <PlayFromStartButton onClick={playFromStart} />
-          <DurationText isVisible={playerRef.current?.duration}>{`${formatTime(currentTime)} / ${formatTime(playerRef.current?.duration)}`}</DurationText>
+          <Time isVisible={playerRef.current?.duration}>{`${formatTime(currentTime)} / ${formatTime(playerRef.current?.duration)}`}</Time>
         </ViewControls>
         <CommonControls>
           <VolumeButton onClick={changeVolume} />
@@ -87,23 +96,26 @@ const StyledVideo = styled.video`
 
 const Controls = styled.div`
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  padding: 1.5% 3%;
   background: #323232;
 `;
 
 const ViewControls = styled.div`
   display: flex;
   justify-content: space-between;
+  padding: 5px 10px;
 `;
 
 const CommonControls = styled.div`
   display: flex;
   justify-content: space-between;
+  padding: 5px 10px;
 `;
 
-const DurationText = styled.p`
+const Time = styled.p`
   margin-left: 5px;
+  font-size: 1em;
   color: #ffffff;
   visibility: ${(props) => (props.isVisible ? 'visible' : 'hidden')}
 `;

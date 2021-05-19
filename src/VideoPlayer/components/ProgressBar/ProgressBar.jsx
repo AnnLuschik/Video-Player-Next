@@ -2,20 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-const ProgressBar = React.memo(({ completed }) => (
-  <Container>
+const ProgressBar = React.memo(({ completed, onClick }) => (
+  <Container onClick={(e) => onClick(e.nativeEvent.offsetX)}>
     <Filler completed={completed} />
   </Container>
 ));
 
 ProgressBar.propTypes = {
   completed: PropTypes.number,
+  onClick: PropTypes.func,
 }
 
 const Container = styled.div`
   width: 100%;
   height: 5px;
   background: #9a9a9a;
+  cursor: pointer;
 `;
 
 const Filler = styled.div`

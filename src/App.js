@@ -5,7 +5,7 @@ import { VideoPlayer, getDataRequest } from './VideoPlayer';
 
 function App() {
   const dispatch = useDispatch();
-  const { responseData } = useSelector((state) => state.videoPlayer);
+  const { responseData, loading, errorMessage } = useSelector((state) => state.videoPlayer);
 
   const [videoUrl, setVideoUrl] = useState('');
 
@@ -21,7 +21,9 @@ function App() {
 
   return (
     <Container>
+      {loading ? <Loading>Loading...</Loading> : null}
       {responseData ? <VideoPlayer url={videoUrl} /> : null}
+      {errorMessage ? <ErrorMessage>{errorMessage}</ErrorMessage> : null}
     </Container>
   );
 }
@@ -36,6 +38,16 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const Loading = styled.p`
+  font-weight: 800;
+  font-size: 2em;
+`;
+
+const ErrorMessage = styled.div`
+  font-size: 1.5em;
+  color: red;
 `;
 
 export default App;
