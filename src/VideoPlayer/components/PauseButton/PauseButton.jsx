@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-export const PauseButton = ({ onClick }) => (
+const PauseButton = ({ onClick }) => (
   <StyledButton onClick={onClick} />
 )
 
@@ -13,7 +13,7 @@ PauseButton.propTypes = {
 const StyledButton = styled.button`
   position: relative;
   width: 20px;
-  height: 20px;
+  margin: 0 5px;
   background: transparent;
   cursor: pointer;
   outline: none;
@@ -24,7 +24,9 @@ const StyledButton = styled.button`
     position: absolute;
     top: 0;
     left: 0;
+    height: 20px;
     border-right: 20px double #ffffff;
-    border-bottom: 0;
   }
 `;
+
+export default PauseButton;

@@ -1,1 +1,1 @@
-export { PlayButton } from './PlayButton';
+export { default as PlayButton } from './PlayButton';

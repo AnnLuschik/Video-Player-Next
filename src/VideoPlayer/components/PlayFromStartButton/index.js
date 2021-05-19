@@ -1,1 +1,1 @@
-export { PlayFromStartButton } from './PlayFromStartButton';
+export { default as PlayFromStartButton } from './PlayFromStartButton';

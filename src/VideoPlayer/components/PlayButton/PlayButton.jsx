@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-export const PlayButton = ({ onClick }) => (
+const PlayButton = ({ onClick }) => (
   <StyledButton onClick={onClick} />
 )
 
@@ -14,6 +14,7 @@ const StyledButton = styled.button`
   position: relative;
   width: 20px;
   height: 20px;
+  margin: 0 5px;
   background: transparent;
   cursor: pointer;
   outline: none;
@@ -29,3 +30,5 @@ const StyledButton = styled.button`
     border-bottom: 10px solid transparent;
   }
 `;
+
+export default PlayButton;

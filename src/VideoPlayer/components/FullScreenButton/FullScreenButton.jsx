@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { fullScreenIcon } from '../../../assets';
 
-export const FullScreenButton = ({ onClick }) => (
+const FullScreenButton = ({ onClick }) => (
   <StyledButton onClick={onClick} bcg={fullScreenIcon} />
 )
 
@@ -19,3 +19,5 @@ const StyledButton = styled.button`
   outline: none;
   border: none;
 `;
+
+export default FullScreenButton;

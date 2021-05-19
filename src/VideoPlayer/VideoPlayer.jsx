@@ -4,33 +4,31 @@ import React, {
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {
-  PlayButton, PauseButton, PlayFromStartButton, FullScreenButton,
+  PlayButton, PauseButton, PlayFromStartButton,
+  FullScreenButton, VolumeButton, ProgressBar,
 } from './components';
+import { formatTime } from '../timeService';
 
 export const VideoPlayer = React.memo(({ url }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
 
   const playerRef = useRef(null);
 
   const togglePlay = useCallback((e) => {
     if (isPlaying) {
       e.target.pause();
-      setIsPlaying(false);
     } else {
       e.target.play();
-      setIsPlaying(true);
     }
   }, [isPlaying]);
 
   const pause = useCallback(() => {
     playerRef.current.pause();
-    setIsPlaying(false);
   }, []);
 
   const play = useCallback(() => {
     playerRef.current.play();
-    setIsPlaying(true);
   }, []);
 
   const playFromStart = useCallback(() => {
@@ -43,16 +41,29 @@ export const VideoPlayer = React.memo(({ url }) => {
     playerRef.current.requestFullscreen();
   }, []);
 
+  const changeVolume = useCallback((value) => {
+    playerRef.current.volume = value;
+  }, []);
+
   return (
     <VideoContainer>
-      <StyledVideo src={url} ref={playerRef} onClick={togglePlay} />
+      <StyledVideo
+        src={url}
+        ref={playerRef}
+        onClick={togglePlay}
+        onTimeUpdate={() => setCurrentTime(playerRef.current?.currentTime.toFixed(2))}
+        onPause={() => setIsPlaying(false)}
+        onPlay={() => setIsPlaying(true)}
+      />
+      <ProgressBar completed={(currentTime / playerRef.current?.duration) * 100} />
       <Controls>
         <ViewControls>
           {isPlaying ? <PauseButton onClick={pause} /> : <PlayButton onClick={play} />}
           <PlayFromStartButton onClick={playFromStart} />
-          <DurationText>{`${currentTime} / ${playerRef.current?.duration.toFixed(2)}`}</DurationText>
+          <DurationText>{`${formatTime(currentTime)} / ${formatTime(playerRef.current?.duration)}`}</DurationText>
         </ViewControls>
         <CommonControls>
+          <VolumeButton onClick={changeVolume} />
           <FullScreenButton onClick={toFullScreen} />
         </CommonControls>
       </Controls>
@@ -67,6 +78,7 @@ VideoPlayer.propTypes = {
 const VideoContainer = styled.div`
   display: flex;
   flex-direction: column;
+  min-width: 350px;
 `;
 
 const StyledVideo = styled.video`
@@ -76,22 +88,23 @@ const StyledVideo = styled.video`
 const Controls = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 5px 10px;
+  padding: 1.5% 3%;
   background: #323232;
 `;
 
 const ViewControls = styled.div`
-  width: 25%;
+  min-width: 25%;
   display: flex;
   justify-content: space-between;
 `;
 
 const CommonControls = styled.div`
-  width: 20%;
+  min-width: 10%;
   display: flex;
   justify-content: space-between;
 `;
 
 const DurationText = styled.p`
+  margin-left: 5px;
   color: #ffffff;
 `;
