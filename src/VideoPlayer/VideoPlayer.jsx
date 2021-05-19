@@ -38,7 +38,15 @@ export const VideoPlayer = React.memo(({ url }) => {
   }, []);
 
   const toFullScreen = useCallback(() => {
-    playerRef.current.requestFullscreen();
+    if (playerRef.current.requestFullscreen) {
+      playerRef.current.requestFullscreen();
+    } else if (playerRef.current.mozRequestFullScreen) {
+      playerRef.current.mozRequestFullScreen(); /* Firefox */
+    } else if (playerRef.current.webkitRequestFullScreen) {
+      playerRef.current.webkitRequestFullScreen(); /* Chrome, Safari and Opera */
+    } else if (playerRef.current.msRequestFullscreen) {
+      playerRef.current.msRequestFullscreen(); /* IE/Edge */
+    }
   }, []);
 
   const changeVolume = useCallback((value) => {
@@ -60,7 +68,10 @@ export const VideoPlayer = React.memo(({ url }) => {
         onTimeUpdate={() => setCurrentTime(playerRef.current?.currentTime.toFixed(2))}
         onPause={() => setIsPlaying(false)}
         onPlay={() => setIsPlaying(true)}
-      />
+      >
+        <source src={url} />
+
+      </StyledVideo>
       <Controls>
         <ProgressBar
           completed={(currentTime / playerRef.current?.duration) * 100 || 0}
