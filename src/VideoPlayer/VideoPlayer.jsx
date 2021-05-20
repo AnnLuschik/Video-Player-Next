@@ -62,16 +62,14 @@ export const VideoPlayer = React.memo(({ url }) => {
   return (
     <VideoContainer>
       <StyledVideo
+        type="video/mp4"
         src={url}
         ref={playerRef}
         onClick={togglePlay}
         onTimeUpdate={() => setCurrentTime(playerRef.current?.currentTime.toFixed(2))}
         onPause={() => setIsPlaying(false)}
         onPlay={() => setIsPlaying(true)}
-      >
-        <source src={url} />
-
-      </StyledVideo>
+      />
       <Controls>
         <ProgressBar
           completed={(currentTime / playerRef.current?.duration) * 100 || 0}
