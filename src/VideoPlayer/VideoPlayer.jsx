@@ -12,8 +12,10 @@ import { formatTime } from '../timeService';
 export const VideoPlayer = React.memo(({ url }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const playerRef = useRef(null);
+  const containerRef = useRef(null);
 
   const togglePlay = useCallback((e) => {
     if (isPlaying) {
@@ -37,17 +39,31 @@ export const VideoPlayer = React.memo(({ url }) => {
     setIsPlaying(true);
   }, []);
 
-  const toFullScreen = useCallback(() => {
-    if (playerRef.current.requestFullscreen) {
-      playerRef.current.requestFullscreen();
-    } else if (playerRef.current.mozRequestFullScreen) {
-      playerRef.current.mozRequestFullScreen(); /* Firefox */
-    } else if (playerRef.current.webkitRequestFullScreen) {
-      playerRef.current.webkitRequestFullScreen(); /* Chrome, Safari and Opera */
-    } else if (playerRef.current.msRequestFullscreen) {
-      playerRef.current.msRequestFullscreen(); /* IE/Edge */
+  const toggleFullscreen = useCallback(() => {
+    if (!isFullscreen) {
+      if (containerRef.current.requestFullscreen) {
+        containerRef.current.requestFullscreen();
+      } else if (containerRef.current.mozRequestFullScreen) {
+        containerRef.current.mozRequestFullScreen(); /* Firefox */
+      } else if (containerRef.current.webkitRequestFullScreen) {
+        containerRef.current.webkitRequestFullScreen(); /* Chrome, Safari and Opera */
+      } else if (containerRef.current.msRequestFullscreen) {
+        containerRef.current.msRequestFullscreen(); /* IE/Edge */
+      }
+      setIsFullscreen(true);
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.webkitExitFullScreen) {
+        document.webkitExitFullScreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+      setIsFullscreen(false);
     }
-  }, []);
+  }, [isFullscreen]);
 
   const changeVolume = useCallback((value) => {
     playerRef.current.volume = value;
@@ -60,16 +76,17 @@ export const VideoPlayer = React.memo(({ url }) => {
   }, []);
 
   return (
-    <VideoContainer>
+    <VideoContainer ref={containerRef}>
       <StyledVideo
-        type="video/mp4"
-        src={url}
         ref={playerRef}
         onClick={togglePlay}
         onTimeUpdate={() => setCurrentTime(playerRef.current?.currentTime.toFixed(2))}
         onPause={() => setIsPlaying(false)}
         onPlay={() => setIsPlaying(true)}
-      />
+      >
+        <source src={url} type="video/mp4" />
+
+      </StyledVideo>
       <Controls>
         <ProgressBar
           completed={(currentTime / playerRef.current?.duration) * 100 || 0}
@@ -82,7 +99,7 @@ export const VideoPlayer = React.memo(({ url }) => {
         </ViewControls>
         <CommonControls>
           <VolumeButton onClick={changeVolume} />
-          <FullScreenButton onClick={toFullScreen} />
+          <FullScreenButton onClick={toggleFullscreen} isFullscreen={isFullscreen} />
         </CommonControls>
       </Controls>
     </VideoContainer>
@@ -94,20 +111,50 @@ VideoPlayer.propTypes = {
 };
 
 const VideoContainer = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   min-width: 320px;
+
+  &::full-screen {
+  width: 100%;
+  height: 100%;
+}
+
+  &::-webkit-full-screen {
+  width: 100%;
+  height: 100%;
+  }
+
+  &::-moz-full-screen {
+  width: 100%;
+  height: 100%;
+}
 `;
 
 const StyledVideo = styled.video`
+  width: 100%;
+  height: 100%;
   cursor: pointer;
+  
+  &::-webkit-media-controls {
+    display: none;
+  }
 `;
 
 const Controls = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  min-height: 40px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   background: #323232;
+  transform: translateY(100%) translateY(-40px);
+  z-index: 2147483648;
 `;
 
 const ViewControls = styled.div`
