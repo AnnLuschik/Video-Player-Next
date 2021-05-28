@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useAuth0 } from '@auth0/auth0-react';
 import styled from 'styled-components'
 import { VideoPlayer, getDataRequest } from './VideoPlayer';
+import { LoginButton, LogoutButton } from './auth';
 
 function App() {
   const dispatch = useDispatch();
   const { responseData, loading, errorMessage } = useSelector((state) => state.videoPlayer);
+
+  const { isAuthenticated } = useAuth0();
 
   const [videoUrl, setVideoUrl] = useState('');
 
@@ -21,9 +25,16 @@ function App() {
 
   return (
     <Container>
-      {loading ? <Loading>Loading...</Loading> : null}
-      {responseData ? <VideoPlayer url={videoUrl} /> : null}
-      {errorMessage ? <ErrorMessage>{errorMessage}</ErrorMessage> : null}
+      {!isAuthenticated
+        ? <LoginButton />
+        : (
+          <>
+            <LogoutButton />
+            {loading ? <Loading>Loading...</Loading> : null}
+            {responseData ? <VideoPlayer url={videoUrl} /> : null}
+            {errorMessage ? <ErrorMessage>{errorMessage}</ErrorMessage> : null}
+          </>
+        )}
     </Container>
   );
 }
