@@ -6,10 +6,7 @@ export const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
 
   return (
-    <StyledButton onClick={() => loginWithRedirect({
-      redirectUri: 'https://annluschik.github.io/Video-Player/',
-    })}
-    >
+    <StyledButton onClick={() => loginWithRedirect()}>
       Log in
     </StyledButton>
   )
