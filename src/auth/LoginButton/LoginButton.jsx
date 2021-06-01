@@ -7,7 +7,7 @@ export const LoginButton = () => {
 
   return (
     <StyledButton onClick={() => loginWithRedirect({
-      redirect_uri: 'https://annluschik.github.io/Video-Player/',
+      redirectUri: 'https://annluschik.github.io/Video-Player/',
     })}
     >
       Log in
