@@ -5,7 +5,14 @@ import { useAuth0 } from '@auth0/auth0-react';
 export const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
 
-  return <StyledButton onClick={() => loginWithRedirect()}>Log in</StyledButton>
+  return (
+    <StyledButton onClick={() => loginWithRedirect({
+      redirect_uri: 'https://annluschik.github.io/Video-Player/',
+    })}
+    >
+      Log in
+    </StyledButton>
+  )
 }
 
 const StyledButton = styled.button`
