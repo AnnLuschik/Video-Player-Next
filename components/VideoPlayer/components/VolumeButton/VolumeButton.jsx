@@ -46,9 +46,12 @@ const VolumeButton = ({ onClick }) => {
       <StyledButton
         onClick={changeVolumeByClick}
       >
-        <Image src={volume < 0.1
-          ? noVolumeIcon
-          : volume < 0.6 ? lowVolumeIcon : highVolumeIcon}
+        <Image
+          src={volume < 0.1
+            ? noVolumeIcon
+            : volume < 0.6 ? lowVolumeIcon : highVolumeIcon}
+          width={100}
+          height={100}
         />
       </StyledButton>
     </Container>

@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import styled from 'styled-components';
-// import { useAuth0 } from '@auth0/nextjs-auth0';
 import { logoutIcon } from '../../../public/assets';
 
 const StyledButton = styled.button`
@@ -20,7 +19,8 @@ const StyledButton = styled.button`
 `;
 
 export const LogoutButton = () => (
-  <StyledButton>
-    <a href="/api/auth/logout" />
-  </StyledButton>
+  <Link href="/api/auth/logout" passHref>
+    <StyledButton />
+  </Link>
+
 )

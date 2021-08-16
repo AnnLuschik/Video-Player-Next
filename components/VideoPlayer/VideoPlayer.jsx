@@ -60,16 +60,16 @@ const ViewControls = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-width: ${(props) => (props.mode ? '12%' : 'auto')};
-  padding: 5px ${(props) => (props.mode ? '20px' : '10px')};
+  min-width: ${(props) => (props.screenMode ? '12%' : 'auto')};
+  padding: 5px ${(props) => (props.screenMode ? '20px' : '10px')};
 `;
 
 const CommonControls = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-width: ${(props) => (props.mode ? '10%' : 'auto')};
-  padding: 5px ${(props) => (props.mode ? '20px' : '10px')};
+  min-width: ${(props) => (props.screenMode ? '10%' : 'auto')};
+  padding: 5px ${(props) => (props.screenMode ? '20px' : '10px')};
 `;
 
 const Time = styled.p`
@@ -162,12 +162,12 @@ export const VideoPlayer = React.memo(({ url }) => {
           completed={(currentTime / playerRef.current?.duration) * 100 || 0}
           onClick={changeCurrentPlaybackPosition}
         />
-        <ViewControls mode={isFullscreen}>
+        <ViewControls screenMode={isFullscreen}>
           {isPlaying ? <PauseButton onClick={pause} /> : <PlayButton onClick={play} />}
           <PlayFromStartButton onClick={playFromStart} />
           <Time isVisible={playerRef.current?.duration}>{`${formatTime(currentTime)} / ${formatTime(playerRef.current?.duration)}`}</Time>
         </ViewControls>
-        <CommonControls mode={isFullscreen}>
+        <CommonControls screenMode={isFullscreen}>
           <VolumeButton onClick={changeVolume} />
           <FullScreenButton onClick={toggleFullscreen} isFullscreen={isFullscreen} />
         </CommonControls>

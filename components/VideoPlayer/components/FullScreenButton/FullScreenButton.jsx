@@ -14,7 +14,11 @@ const StyledButton = styled.div`
 
 const FullScreenButton = ({ onClick, isFullscreen }) => (
   <StyledButton onClick={onClick}>
-    <Image src={isFullscreen ? normalScreenIcon : fullScreenIcon} width={100} height={100} />
+    <Image
+      src={isFullscreen ? normalScreenIcon : fullScreenIcon}
+      width={100}
+      height={100}
+    />
   </StyledButton>
 )
 
