@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Image from 'next/image';
+// import Image from 'next/image';
 import { highVolumeIcon, lowVolumeIcon, noVolumeIcon } from '../../../../public/assets';
 
 const Container = styled.div`
@@ -16,6 +16,7 @@ const StyledButton = styled.div`
   cursor: pointer;
   outline: none;
   border: none;
+  background-image: url(${(props) => props.icon}) center no-repeat;
 `;
 
 const StyledInput = styled.input`
@@ -45,15 +46,10 @@ const VolumeButton = ({ onClick }) => {
       <StyledInput type="range" min={0} max={1} step={0.1} onChange={(e) => setVolume(e.target.value)} onMouseMove={changeVolumeByInput} value={volume} />
       <StyledButton
         onClick={changeVolumeByClick}
-      >
-        <Image
-          src={volume < 0.1
-            ? noVolumeIcon
-            : volume < 0.6 ? lowVolumeIcon : highVolumeIcon}
-          width={100}
-          height={100}
-        />
-      </StyledButton>
+        icon={volume < 0.1
+          ? noVolumeIcon
+          : volume < 0.6 ? lowVolumeIcon : highVolumeIcon}
+      />
     </Container>
   );
 };
