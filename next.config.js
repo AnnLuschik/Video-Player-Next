@@ -1,14 +1,10 @@
-const withImages = require('next-images');
-
 const isProd = process.env.NODE_ENV === 'production';
 
-module.exports = withImages({
+module.exports = {
   assetPrefix: isProd ? '/Video-Player-Next/' : '',
   esModule: true,
   webpack(config) {
-    return config
+    return config;
   },
-  images: {
-    disableStaticImages: true,
-  },
-});
+  fileLoader: true,
+};
