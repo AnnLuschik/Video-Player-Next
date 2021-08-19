@@ -1,20 +1,21 @@
 import PropTypes from 'prop-types';
-// import Image from 'next/image';
 import styled from 'styled-components';
-import { fullScreenIcon, normalScreenIcon } from '../../../../public/assets';
+import Icon from '../../../../icons/js';
 
 const StyledButton = styled.div`
-  width: 22px;
-  height: 22px;
+  display: flex;
+  align-items: center;
+  margin: 0 5px;
   cursor: pointer;
   outline: none;
   border: none;
-  background-image: url(${(props) => props.icon}) center no-repeat;
-  /* background-color: transparent; */
+  background-color: transparent; 
 `;
 
 const FullScreenButton = ({ onClick, isFullscreen }) => (
-  <StyledButton onClick={onClick} icon={isFullscreen ? normalScreenIcon : fullScreenIcon} />
+  <StyledButton onClick={onClick}>
+    <Icon name={isFullscreen ? 'fullscreenExit' : 'fullscreen'} size="large" />
+  </StyledButton>
 )
 
 FullScreenButton.propTypes = {
