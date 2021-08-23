@@ -1,1 +1,1 @@
-[Watch here](https://annluschik.github.io/Video-Player-Next/)
+[Watch here](https://video-player-next.vercel.app/)
