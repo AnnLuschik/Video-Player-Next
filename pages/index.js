@@ -23,6 +23,8 @@ function Home({ responseData }) {
   const isProd = process.env.NODE_ENV === 'production';
   console.log(isProd);
 
+  console.log(process.env.AUTH0_BASE_URL);
+
   useEffect(() => {
     setVideoUrl(responseData.data.find((item) => item.format === 'mp4').url);
   }, [responseData.data]);

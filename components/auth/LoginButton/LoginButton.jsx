@@ -14,7 +14,7 @@ const StyledLink = styled.a`
 `;
 
 export const LoginButton = () => (
-  <Link href={`${process.env.AUTH0_BASE_URL}/api/auth/login`} passHref>
+  <Link href="/api/auth/login" passHref>
     <Wrapper>
       <StyledLink>Log in</StyledLink>
     </Wrapper>
