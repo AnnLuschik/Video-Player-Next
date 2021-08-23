@@ -20,6 +20,9 @@ function Home({ responseData }) {
   const { user, error, isLoading } = useUser();
   const [videoUrl, setVideoUrl] = useState('');
 
+  const isProd = process.env.NODE_ENV === 'production';
+  console.log(isProd);
+
   useEffect(() => {
     setVideoUrl(responseData.data.find((item) => item.format === 'mp4').url);
   }, [responseData.data]);
