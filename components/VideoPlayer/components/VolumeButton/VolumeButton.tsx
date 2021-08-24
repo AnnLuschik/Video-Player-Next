@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Icon from '../../../../icons/js';
+import Icon from '../../../../icons/ts';
 
 const Container = styled.div`
   display: flex;
@@ -24,7 +23,11 @@ const StyledInput = styled.input`
   height: 5px;
 `;
 
-const VolumeButton = ({ onClick }) => {
+interface VolumeButtonProps {
+  onClick(x: number): void,
+}
+
+const VolumeButton = ({ onClick }: VolumeButtonProps) => {
   const [volume, setVolume] = useState(1);
 
   const changeVolumeByInput = useCallback(() => {
@@ -43,16 +46,12 @@ const VolumeButton = ({ onClick }) => {
 
   return (
     <Container>
-      <StyledInput type="range" min={0} max={1} step={0.1} onChange={(e) => setVolume(e.target.value)} onMouseMove={changeVolumeByInput} value={volume} />
+      <StyledInput type="range" min={0} max={1} step={0.1} onChange={(e) => setVolume(+e.target.value)} onMouseMove={changeVolumeByInput} value={volume} />
       <StyledButton onClick={changeVolumeByClick}>
         <Icon name={volume < 0.1 ? 'VolumeMuted' : volume < 0.6 ? 'VolumeDown' : 'VolumeUp'} />
       </StyledButton>
     </Container>
   );
-};
-
-VolumeButton.propTypes = {
-  onClick: PropTypes.func,
 };
 
 export default VolumeButton;

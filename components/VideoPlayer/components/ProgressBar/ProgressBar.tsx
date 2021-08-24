@@ -1,6 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
+
+interface ProgressBarProps {
+  completed: number,
+  onClick: (x: number) => void,
+}
 
 const Container = styled.div`
   width: 100%;
@@ -9,21 +13,16 @@ const Container = styled.div`
   cursor: pointer;
 `;
 
-const Filler = styled.div`
+const Filler = styled.div<{ completed: number }>`
   width: ${(props) => props.completed}%;
   height: 100%;
   background: red;
 `;
 
-const ProgressBar = React.memo(({ completed, onClick }) => (
+const ProgressBar = React.memo(({ completed, onClick }: ProgressBarProps) => (
   <Container onClick={(e) => onClick(e.nativeEvent.offsetX)}>
     <Filler completed={completed} />
   </Container>
 ));
-
-ProgressBar.propTypes = {
-  completed: PropTypes.number,
-  onClick: PropTypes.func,
-}
 
 export default ProgressBar;

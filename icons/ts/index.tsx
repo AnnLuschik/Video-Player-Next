@@ -27,8 +27,8 @@ const ICONS = {
 
 interface IconProps {
   name: keyof typeof ICONS,
-  color: keyof typeof Colors,
-  size: keyof typeof Sizes,
+  color?: keyof typeof Colors,
+  size?: keyof typeof Sizes,
 }
 
 const Icon = ({ name, size = 'medium', color = 'white' }: IconProps) => {

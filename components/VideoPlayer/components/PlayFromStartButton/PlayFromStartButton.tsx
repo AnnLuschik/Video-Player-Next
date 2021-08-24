@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const StyledDiv = styled.div`
@@ -9,12 +8,12 @@ const StyledDiv = styled.div`
   cursor: pointer;
 `;
 
-const PlayFromStartButton = ({ onClick }) => (
-  <StyledDiv onClick={onClick} />
-)
+interface PlayFromStartButtonProps {
+  onClick(): void,
+}
 
-PlayFromStartButton.propTypes = {
-  onClick: PropTypes.func,
-};
+const PlayFromStartButton = ({ onClick }: PlayFromStartButtonProps) => (
+  <StyledDiv onClick={onClick} />
+);
 
 export default PlayFromStartButton;

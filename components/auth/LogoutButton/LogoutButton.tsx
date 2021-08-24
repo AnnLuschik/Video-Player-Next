@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import styled from 'styled-components';
-import Icon from '../../../icons/js';
+import Icon from '../../../icons/ts';
 
 const StyledButton = styled.button`
   position: absolute;
@@ -22,5 +22,4 @@ export const LogoutButton = () => (
       <Icon name="Logout" size="large" />
     </StyledButton>
   </Link>
-
-)
+);

@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const StyledButton = styled.button`
@@ -21,12 +20,12 @@ const StyledButton = styled.button`
   }
 `;
 
-const PauseButton = ({ onClick }) => (
-  <StyledButton onClick={onClick} />
-)
+interface PauseButtonProps {
+  onClick(): void,
+}
 
-PauseButton.propTypes = {
-  onClick: PropTypes.func,
-};
+const PauseButton = ({ onClick }: PauseButtonProps) => (
+  <StyledButton onClick={onClick} />
+);
 
 export default PauseButton;

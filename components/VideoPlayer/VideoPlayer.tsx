@@ -1,7 +1,6 @@
 import React, {
   useState, useCallback, useRef,
 } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {
   PlayButton, PauseButton, PlayFromStartButton,
@@ -55,7 +54,7 @@ const Controls = styled.div`
   z-index: 2147483648;
 `;
 
-const ViewControls = styled.div`
+const ViewControls = styled.div<{ screenMode: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -63,7 +62,7 @@ const ViewControls = styled.div`
   padding: 5px ${(props) => (props.screenMode ? '20px' : '10px')};
 `;
 
-const CommonControls = styled.div`
+const CommonControls = styled.div<{ screenMode: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -71,20 +70,28 @@ const CommonControls = styled.div`
   padding: 5px ${(props) => (props.screenMode ? '20px' : '10px')};
 `;
 
-const Time = styled.p`
+const Time = styled.p<{ isVisible: boolean }>`
   margin-left: 5px;
   font-size: 1em;
   color: #ffffff;
   visibility: ${(props) => (props.isVisible ? 'visible' : 'hidden')};
 `;
 
-export const VideoPlayer = React.memo(({ url }) => {
+interface ThisDocument extends Document {
+  mozCancelFullScreen?: () => Promise<void>,
+  webkitExitFullScreen?: () => Promise<void>,
+  msExitFullscreen?: () => Promise<void>,
+}
+
+export const VideoPlayer = React.memo(({ url }: { url: string }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const playerRef = useRef(null);
   const containerRef = useRef(null);
+
+  const thisDocument: ThisDocument = document;
 
   const togglePlay = useCallback((e) => {
     if (isPlaying) {
@@ -121,14 +128,14 @@ export const VideoPlayer = React.memo(({ url }) => {
       }
       setIsFullscreen(true);
     } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.webkitExitFullScreen) {
-        document.webkitExitFullScreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
+      if (thisDocument.exitFullscreen) {
+        thisDocument.exitFullscreen();
+      } else if (thisDocument.mozCancelFullScreen) {
+        thisDocument.mozCancelFullScreen();
+      } else if (thisDocument.webkitExitFullScreen) {
+        thisDocument.webkitExitFullScreen();
+      } else if (thisDocument.msExitFullscreen) {
+        thisDocument.msExitFullscreen();
       }
       setIsFullscreen(false);
     }
@@ -174,7 +181,3 @@ export const VideoPlayer = React.memo(({ url }) => {
     </VideoContainer>
   );
 });
-
-VideoPlayer.propTypes = {
-  url: PropTypes.string,
-};

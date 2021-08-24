@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { GetStaticProps } from 'next';
 import { useUser } from '@auth0/nextjs-auth0';
 import styled from 'styled-components'
 import { VideoPlayer } from '../components/VideoPlayer';
@@ -16,7 +17,21 @@ const Container = styled.div`
   align-items: center;
 `;
 
-function Home({ responseData }) {
+interface Item {
+  name: string,
+  format: string,
+  source: string,
+  url: string
+}
+
+interface HomeProps {
+  responseData: {
+    status: string,
+    data: Item[],
+  }
+}
+
+function Home({ responseData }: HomeProps) {
   const { user, error, isLoading } = useUser();
   const [videoUrl, setVideoUrl] = useState('');
 
@@ -41,7 +56,7 @@ function Home({ responseData }) {
   );
 }
 
-export async function getStaticProps() {
+export const getStaticProps:GetStaticProps = async () => {
   const res = await fetch('https://dl.dropboxusercontent.com/s/jse5lx9xnmcav51/media.json');
   const data = await res.json();
 

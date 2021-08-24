@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const StyledButton = styled.button`
@@ -22,12 +21,12 @@ const StyledButton = styled.button`
   }
 `;
 
-const PlayButton = ({ onClick }) => (
-  <StyledButton onClick={onClick} />
-)
+interface PlayButtonProps {
+  onClick(): void,
+}
 
-PlayButton.propTypes = {
-  onClick: PropTypes.func,
-};
+const PlayButton = ({ onClick }: PlayButtonProps) => (
+  <StyledButton onClick={onClick} />
+);
 
 export default PlayButton;

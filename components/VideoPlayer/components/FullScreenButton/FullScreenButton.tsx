@@ -1,6 +1,5 @@
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Icon from '../../../../icons/js';
+import Icon from '../../../../icons/ts';
 
 const StyledButton = styled.div`
   display: flex;
@@ -12,15 +11,15 @@ const StyledButton = styled.div`
   background-color: transparent; 
 `;
 
-const FullScreenButton = ({ onClick, isFullscreen }) => (
+interface FullScreenButtonProps {
+  onClick(): void,
+  isFullscreen: boolean,
+}
+
+const FullScreenButton = ({ onClick, isFullscreen }: FullScreenButtonProps) => (
   <StyledButton onClick={onClick}>
     <Icon name={isFullscreen ? 'FullscreenExit' : 'Fullscreen'} size="large" />
   </StyledButton>
-)
-
-FullScreenButton.propTypes = {
-  onClick: PropTypes.func,
-  isFullscreen: PropTypes.bool.isRequired,
-};
+);
 
 export default FullScreenButton;
