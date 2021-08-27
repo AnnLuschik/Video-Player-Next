@@ -4,4 +4,7 @@ module.exports = {
     return config;
   },
   fileLoader: true,
+  images: {
+    domains: ['firebasestorage.googleapis.com'],
+  },
 };
