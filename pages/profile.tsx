@@ -1,10 +1,10 @@
-// import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 // import { GetServerSideProps } from 'next'
-// import { useUser } from '@auth0/nextjs-auth0';
-// import { useCollection } from 'react-firebase-hooks/firestore';
+import { useUser } from '@auth0/nextjs-auth0';
+import { useCollection } from 'react-firebase-hooks/firestore';
 import Image from 'next/image';
 import styled from 'styled-components';
-// import firebase, { storage } from '../firebase/clientApp';
+import firebase, { storage } from '../firebase/clientApp';
 import defaultAvatar from '../public/default-avatar.png';
 
 const Wrapper = styled.div`
@@ -58,64 +58,64 @@ const UploadInput = styled.input`
   display: none;
 `;
 
-// const Title = styled.h1`
-//   font-size: 26px;
-// `;
+const Title = styled.h1`
+  font-size: 26px;
+`;
 
-// const Message = styled.p`
-//   font-size: 18px;
-//   color: #010101;
-// `;
+const Message = styled.p`
+  font-size: 18px;
+  color: #010101;
+`;
 
 const Profile = () => {
-  // const { user, error, isLoading } = useUser();
-  // const [image, setImage] = useState(null);
-  // const [objectURL, setObjectURL] = useState(null);
+  const { user, error, isLoading } = useUser();
+  const [image, setImage] = useState(null);
+  const [objectURL, setObjectURL] = useState(null);
 
-  // const db = firebase.firestore();
-  // const storageRef = storage.ref();
+  const db = firebase.firestore();
+  const storageRef = storage.ref();
 
-  // const [users, usersLoading] = useCollection(db.collection('users'), {});
+  const [users, usersLoading] = useCollection(db.collection('users'), {});
 
   const imageSize = 150;
 
-  const uploadToClient = async () => {
-    // if (event.target.files && event.target.files[0]) {
-    //   const i = event.target.files[0];
-    //   setImage(i);
-    //   setObjectURL(URL.createObjectURL(i));
-    // }
+  const uploadToClient = async (event) => {
+    if (event.target.files && event.target.files[0]) {
+      const i = event.target.files[0];
+      setImage(i);
+      setObjectURL(URL.createObjectURL(i));
+    }
   };
 
   const uploadToFirebase = async () => {
-    // if (image) {
-    //   const imageRef = storageRef.child(image.name);
-    //   await imageRef.put(image);
-    //   const downloadURL = await imageRef.getDownloadURL();
-    //   try {
-    //     await db.collection('users').doc(`${user.email}`).set({ picturePath: downloadURL });
-    //   } catch (err) {
-    //     console.log(err.message);
-    //   }
-    // }
+    if (image) {
+      const imageRef = storageRef.child(image.name);
+      await imageRef.put(image);
+      const downloadURL = await imageRef.getDownloadURL();
+      try {
+        await db.collection('users').doc(`${user.email}`).set({ picturePath: downloadURL });
+      } catch (err) {
+        console.log(err.message);
+      }
+    }
   };
 
-  // useEffect(() => {
-  //   if (users && !usersLoading) {
-  //     db.collection('users').doc(`${user.email}`).get()
-  //       .then((data) => setObjectURL(data.data().picturePath));
-  //   }
-  // }, [users, usersLoading, db, user.email]);
+  useEffect(() => {
+    if (users && !usersLoading) {
+      db.collection('users').doc(`${user.email}`).get()
+        .then((data) => setObjectURL(data.data().picturePath));
+    }
+  }, [users, usersLoading, db, user.email]);
 
-  // if (isLoading) return <Message>Loading...</Message>
-  // if (error) return <Message>{error.message}</Message>
+  if (isLoading) return <Message>Loading...</Message>
+  if (error) return <Message>{error.message}</Message>
 
   return (
     <Wrapper>
       <Container>
         <AvatarWrapper>
           <AvatarContainer size={imageSize}>
-            <Avatar src={defaultAvatar} layout="fill" />
+            <Avatar src={objectURL || defaultAvatar} layout="fill" />
           </AvatarContainer>
           <ChangeAvatar>
             <UploadInput type="file" accept="image/*" onChange={uploadToClient} />
@@ -123,7 +123,7 @@ const Profile = () => {
           </ChangeAvatar>
           <button onClick={uploadToFirebase}>Upload</button>
         </AvatarWrapper>
-        {/* <Title>{user.email}</Title> */}
+        <Title>{user.email || 'No data'}</Title>
       </Container>
     </Wrapper>
   );
