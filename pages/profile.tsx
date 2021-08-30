@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-// import { GetServerSideProps } from 'next'
 import { useUser } from '@auth0/nextjs-auth0';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import Image from 'next/image';
 import styled from 'styled-components';
-import firebase, { storage } from '../firebase/clientApp';
+import { firebaseStorage, firebaseFirestore } from '../firebase/clientApp';
 import defaultAvatar from '../public/default-avatar.png';
 
 const Wrapper = styled.div`
@@ -72,10 +71,9 @@ const Profile = () => {
   const [image, setImage] = useState(null);
   const [objectURL, setObjectURL] = useState(null);
 
-  const db = firebase.firestore();
-  const storageRef = storage.ref();
+  const storageRef = firebaseStorage.ref();
 
-  const [users, usersLoading] = useCollection(db.collection('users'), {});
+  const [users, usersLoading] = useCollection(firebaseFirestore.collection('users'), {});
 
   const imageSize = 150;
 
@@ -93,7 +91,7 @@ const Profile = () => {
       await imageRef.put(image);
       const downloadURL = await imageRef.getDownloadURL();
       try {
-        await db.collection('users').doc(`${user.email}`).set({ picturePath: downloadURL });
+        await firebaseFirestore.collection('users').doc(`${user.email}`).set({ picturePath: downloadURL });
       } catch (err) {
         console.log(err.message);
       }
@@ -102,10 +100,10 @@ const Profile = () => {
 
   useEffect(() => {
     if (users && !usersLoading) {
-      db.collection('users').doc(`${user.email}`).get()
+      firebaseFirestore.collection('users').doc(`${user.email}`).get()
         .then((data) => setObjectURL(data.data().picturePath));
     }
-  }, [users, usersLoading, db, user.email]);
+  }, [users, usersLoading, user?.email]);
 
   if (isLoading) return <Message>Loading...</Message>
   if (error) return <Message>{error.message}</Message>
@@ -128,16 +126,5 @@ const Profile = () => {
     </Wrapper>
   );
 };
-
-// export const getServerSideProps: GetServerSideProps = async () => {
-//   const userData = firebase.firestore().collection('users').doc(`${user.email}`).get()
-//     .then(((data) => setObjectURL(data.data().picturePath)));
-
-//   return {
-//     props: {
-//       userData,
-//     },
-//   }
-// }
 
 export default Profile;
