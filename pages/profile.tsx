@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+// import { useState, useEffect } from 'react';
 // import { GetServerSideProps } from 'next'
-import { useUser } from '@auth0/nextjs-auth0';
-import { useCollection } from 'react-firebase-hooks/firestore';
+// import { useUser } from '@auth0/nextjs-auth0';
+// import { useCollection } from 'react-firebase-hooks/firestore';
 import Image from 'next/image';
 import styled from 'styled-components';
-import firebase, { storage } from '../firebase/clientApp';
+// import firebase, { storage } from '../firebase/clientApp';
 import defaultAvatar from '../public/default-avatar.png';
 
 const Wrapper = styled.div`
@@ -58,14 +58,14 @@ const UploadInput = styled.input`
   display: none;
 `;
 
-const Title = styled.h1`
-  font-size: 26px;
-`;
+// const Title = styled.h1`
+//   font-size: 26px;
+// `;
 
-const Message = styled.p`
-  font-size: 18px;
-  color: #010101;
-`;
+// const Message = styled.p`
+//   font-size: 18px;
+//   color: #010101;
+// `;
 
 const Profile = () => {
   // const { user, error, isLoading } = useUser();
