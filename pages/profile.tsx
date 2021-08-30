@@ -99,11 +99,11 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    if (users && !usersLoading) {
+    if (users && !usersLoading && user) {
       firebaseFirestore.collection('users').doc(`${user.email}`).get()
         .then((data) => setObjectURL(data.data().picturePath));
     }
-  }, [users, usersLoading, user?.email]);
+  }, [users, usersLoading, user]);
 
   if (isLoading) return <Message>Loading...</Message>
   if (error) return <Message>{error.message}</Message>
