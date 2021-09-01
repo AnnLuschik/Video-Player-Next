@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useUser } from '@auth0/nextjs-auth0';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import Image from 'next/image';
@@ -21,24 +21,32 @@ const Wrapper = styled.div`
 
 const Container = styled.div`
   display: flex;
-  min-width: 50vw;
-  min-height: 50vh;
-  padding: 10px;
-  background-color: #ffffff;
+  flex-direction: column;
+  align-items: center;
+  min-width: 400px;
+  min-height: 750px;
+  padding: 60px 30px;
+  background-color: #ecf0f3;
+  border-radius: 40px;
+  box-shadow: 13px 13px 20px #cbced1, -13px -13px 20px #ffffff;
 `;
 
 const AvatarWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 `;
 
 const AvatarContainer = styled.figure<{size: number}>`
   position: relative;
   width: ${(props) => props.size}px;
   height: ${(props) => props.size}px;
- 
+  margin-bottom: 30px;
   border-radius: 50%;
+  box-shadow: 
+    8px 8px 15px #a7aaaf,
+    -8px -8px 15px #ffffff;
 `;
 
 const Avatar = styled(Image)`
@@ -46,15 +54,41 @@ const Avatar = styled(Image)`
   border-radius: 50%;
 `;
 
-const ChangeAvatar = styled.label`
-  border: 1px solid #ccc;
-  display: inline-block;
-  padding: 6px 12px;
-  cursor: pointer;
+const StyledForm = styled.form`
+  display: flex;
+  justify-content: space-around;
+  width: 60%;
+  margin-bottom: 25px;
 `;
 
-const UploadInput = styled.input`
+const ChangeAvatar = styled.label`
+  display: flex;
+  margin: 0;
+  padding: 10px 15px;
+  font-weight: 600;
+  font-size: 1em;
+  cursor: pointer;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 3px 3px 8px #b1b1b1, -3px -3px 8px #ffffff;  
+`;
+
+const ChangeAvatarInput = styled.input`
   display: none;
+`;
+
+const UploadButton = styled.button`
+  margin: 0;
+  padding: 10px 15px;
+  font-weight: 600;
+  font-size: 1em;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 3px 3px 8px #b1b1b1, -3px -3px 8px #ffffff;
+  cursor: pointer;
+  &:active {
+    background: #fefefe;
+  }
 `;
 
 const Title = styled.h1`
@@ -77,7 +111,7 @@ const Profile = () => {
 
   const imageSize = 150;
 
-  const uploadToClient = async (event) => {
+  const uploadToClient = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const i = event.target.files[0];
       setImage(i);
@@ -85,13 +119,15 @@ const Profile = () => {
     }
   };
 
-  const uploadToFirebase = async () => {
+  const uploadToFirebase = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (image) {
       const imageRef = storageRef.child(image.name);
       await imageRef.put(image);
       const downloadURL = await imageRef.getDownloadURL();
       try {
         await firebaseFirestore.collection('users').doc(`${user.email}`).set({ picturePath: downloadURL });
+        alert('Photo uploaded sucessfully');
       } catch (err) {
         console.log(err.message);
       }
@@ -115,11 +151,13 @@ const Profile = () => {
           <AvatarContainer size={imageSize}>
             <Avatar src={objectURL || defaultAvatar} layout="fill" />
           </AvatarContainer>
-          <ChangeAvatar>
-            <UploadInput type="file" accept="image/*" onChange={uploadToClient} />
-            Change photo
-          </ChangeAvatar>
-          <button onClick={uploadToFirebase}>Upload</button>
+          <StyledForm onSubmit={uploadToFirebase}>
+            <ChangeAvatar>
+              <ChangeAvatarInput type="file" accept="image/*" onChange={uploadToClient} />
+              Change photo
+            </ChangeAvatar>
+            <UploadButton type="submit">Save</UploadButton>
+          </StyledForm>
         </AvatarWrapper>
         <Title>{user.email || 'No data'}</Title>
       </Container>

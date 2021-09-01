@@ -10,3 +10,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: linear-gradient(#05bae9, #05dac4);
 }
+
+button {
+  font-family: inherit;
+}
