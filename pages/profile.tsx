@@ -5,6 +5,7 @@ import Image from 'next/image';
 import styled from 'styled-components';
 import { firebaseStorage, firebaseFirestore } from '../firebase/clientApp';
 import defaultAvatar from '../public/default-avatar.png';
+import Icon from '../icons/ts';
 
 const Wrapper = styled.div`
   position: absolute;
@@ -20,6 +21,7 @@ const Wrapper = styled.div`
 `;
 
 const Container = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -29,6 +31,26 @@ const Container = styled.div`
   background-color: #ecf0f3;
   border-radius: 40px;
   box-shadow: 13px 13px 20px #cbced1, -13px -13px 20px #ffffff;
+`;
+
+const EditBtnContainer = styled.button<{isActive: boolean}>`
+  position: absolute;
+  top: 5%;
+  right: 10%;
+  background: none;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  box-shadow: ${(props) => (props.isActive
+    ? 'inset 3px 3px 8px #cbced1, inset -3px -3px 8px #ffffff'
+    : '3px 3px 8px #b1b1b1, -3px -3px 8px #ffffff')};
+  cursor: pointer;
+  &:hover {
+    background: #fefefe;
+  }
+  &:active {
+    background: #cbced1;
+  } 
 `;
 
 const AvatarWrapper = styled.div`
@@ -86,9 +108,12 @@ const UploadButton = styled.button`
   border-radius: 5px;
   box-shadow: 3px 3px 8px #b1b1b1, -3px -3px 8px #ffffff;
   cursor: pointer;
-  &:active {
+  &:hover {
     background: #fefefe;
   }
+  &:active {
+    background: #cbced1;
+  } 
 `;
 
 const Title = styled.h1`
@@ -104,6 +129,7 @@ const Profile = () => {
   const { user, error, isLoading } = useUser();
   const [image, setImage] = useState(null);
   const [objectURL, setObjectURL] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   const storageRef = firebaseStorage.ref();
 
@@ -147,17 +173,23 @@ const Profile = () => {
   return (
     <Wrapper>
       <Container>
+        <EditBtnContainer onClick={() => setIsEditing((prev) => !prev)} isActive={isEditing}>
+          <Icon name="Edit" color="black" size="large" />
+        </EditBtnContainer>
         <AvatarWrapper>
           <AvatarContainer size={imageSize}>
             <Avatar src={objectURL || defaultAvatar} layout="fill" />
           </AvatarContainer>
-          <StyledForm onSubmit={uploadToFirebase}>
-            <ChangeAvatar>
-              <ChangeAvatarInput type="file" accept="image/*" onChange={uploadToClient} />
-              Change photo
-            </ChangeAvatar>
-            <UploadButton type="submit">Save</UploadButton>
-          </StyledForm>
+          {isEditing
+            ? (
+              <StyledForm onSubmit={uploadToFirebase}>
+                <ChangeAvatar>
+                  <ChangeAvatarInput type="file" accept="image/*" onChange={uploadToClient} />
+                  Change photo
+                </ChangeAvatar>
+                <UploadButton type="submit">Save</UploadButton>
+              </StyledForm>
+            ) : null}
         </AvatarWrapper>
         <Title>{user.email || 'No data'}</Title>
       </Container>

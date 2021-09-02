@@ -4,6 +4,7 @@ import Logout from './Logout';
 import VolumeDown from './VolumeDown';
 import VolumeMuted from './VolumeMuted';
 import VolumeUp from './VolumeUp';
+import Edit from './Edit';
 
 export enum Colors {
   white = '#ffffff',
@@ -23,6 +24,7 @@ const ICONS = {
   VolumeUp,
   VolumeDown,
   VolumeMuted,
+  Edit,
 }
 
 interface IconProps {
