@@ -31,16 +31,17 @@ const Profile = () => {
   const saveChanges = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    let downloadURL = '';
+    const target = firebaseFirestore.collection('users').doc(`${authUser.email}`);
 
     if (image) {
       const imageRef = storageRef.child(image?.name);
       await imageRef.put(image);
-      downloadURL = await imageRef.getDownloadURL();
+      const downloadURL = await imageRef.getDownloadURL();
+      await target.update({ picturePath: downloadURL });
     }
 
     try {
-      await firebaseFirestore.collection('users').doc(`${authUser.email}`).set({ name, picturePath: downloadURL });
+      await target.update({ name });
     } catch (err) {
       console.log(err.message);
     }
