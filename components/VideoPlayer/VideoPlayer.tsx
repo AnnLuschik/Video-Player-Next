@@ -51,6 +51,7 @@ const Controls = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   background: #323232;
+  transform: translateY(100%);
   z-index: 2147483648;
 `;
 
