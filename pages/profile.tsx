@@ -11,7 +11,6 @@ const Profile = () => {
   const { user: authUser, error, isLoading } = useUser();
   const [storedUsers, storedUsersLoading] = useCollection(firebaseFirestore.collection('users'), {});
 
-  const [user, setUser] = useState(null);
   const [image, setImage] = useState(null);
   const [objectURL, setObjectURL] = useState('');
   const [isEditing, setIsEditing] = useState(false);
@@ -52,7 +51,6 @@ const Profile = () => {
     if (storedUsers && !storedUsersLoading && authUser) {
       firebaseFirestore.collection('users').doc(`${authUser.email}`).get()
         .then((data) => {
-          setUser(data.data());
           setObjectURL(data.data().picturePath);
           setName(data.data().name)
         });
