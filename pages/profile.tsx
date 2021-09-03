@@ -10,12 +10,12 @@ import Icon from '../icons/ts';
 const Profile = () => {
   const { user: authUser, error, isLoading } = useUser();
   const [storedUsers, storedUsersLoading] = useCollection(firebaseFirestore.collection('users'), {});
-  const user = storedUsers?.docs.find((el) => el.id === authUser.email).data();
 
+  const [user, setUser] = useState(null);
   const [image, setImage] = useState(null);
-  const [objectURL, setObjectURL] = useState(null);
+  const [objectURL, setObjectURL] = useState('');
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState(user?.name || '');
+  const [name, setName] = useState('');
 
   const storageRef = firebaseStorage.ref();
 
@@ -31,11 +31,17 @@ const Profile = () => {
 
   const saveChanges = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const imageRef = storageRef.child(image?.name);
-    await imageRef.put(image);
-    const downloadURL = await imageRef.getDownloadURL();
+
+    let downloadURL = '';
+
+    if (image) {
+      const imageRef = storageRef.child(image?.name);
+      await imageRef.put(image);
+      downloadURL = await imageRef.getDownloadURL();
+    }
+
     try {
-      await firebaseFirestore.collection('users').doc(`${authUser.email}`).set({ name, picturePath: downloadURL });
+      await firebaseFirestore.collection('users').doc(`${authUser.email}`).set({ name: user.name, picturePath: downloadURL });
     } catch (err) {
       console.log(err.message);
     }
@@ -45,15 +51,13 @@ const Profile = () => {
   useEffect(() => {
     if (storedUsers && !storedUsersLoading && authUser) {
       firebaseFirestore.collection('users').doc(`${authUser.email}`).get()
-        .then((data) => setObjectURL(data.data().picturePath));
+        .then((data) => {
+          setUser(data.data());
+          setObjectURL(data.data().picturePath);
+          setName(data.data().name)
+        });
     }
   }, [storedUsers, storedUsersLoading, authUser]);
-
-  useEffect(() => {
-    if (user) {
-      setName(user.name)
-    }
-  }, [user]);
 
   if (isLoading) return <Message>Loading...</Message>
   if (error) return <Message>{error.message}</Message>
