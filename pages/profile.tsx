@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@auth0/nextjs-auth0';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import Image from 'next/image';
@@ -6,6 +6,83 @@ import styled from 'styled-components';
 import { firebaseStorage, firebaseFirestore } from '../firebase/clientApp';
 import defaultAvatar from '../public/default-avatar.png';
 import Icon from '../icons/ts';
+
+const Profile = () => {
+  const { user: authUser, error, isLoading } = useUser();
+  const [storedUsers, storedUsersLoading] = useCollection(firebaseFirestore.collection('users'), {});
+  const user = storedUsers?.docs.find((el) => el.id === authUser.email).data();
+
+  const [image, setImage] = useState(null);
+  const [objectURL, setObjectURL] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [name, setName] = useState(user?.name || '');
+
+  const storageRef = firebaseStorage.ref();
+
+  const imageSize = 150;
+
+  const uploadToClient = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const i = event.target.files[0];
+      setImage(i);
+      setObjectURL(URL.createObjectURL(i));
+    }
+  };
+
+  const saveChanges = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const imageRef = storageRef.child(image?.name);
+    await imageRef.put(image);
+    const downloadURL = await imageRef.getDownloadURL();
+    try {
+      await firebaseFirestore.collection('users').doc(`${authUser.email}`).set({ name, picturePath: downloadURL });
+    } catch (err) {
+      console.log(err.message);
+    }
+    setIsEditing(false);
+  }
+
+  useEffect(() => {
+    if (storedUsers && !storedUsersLoading && authUser) {
+      firebaseFirestore.collection('users').doc(`${authUser.email}`).get()
+        .then((data) => setObjectURL(data.data().picturePath));
+    }
+  }, [storedUsers, storedUsersLoading, authUser]);
+
+  if (isLoading) return <Message>Loading...</Message>
+  if (error) return <Message>{error.message}</Message>
+
+  return (
+    <Wrapper>
+      <Container>
+        <EditBtnContainer onClick={() => setIsEditing((prev) => !prev)} isActive={isEditing}>
+          <Icon name="Edit" color="black" size="large" />
+        </EditBtnContainer>
+        <AvatarWrapper>
+          <AvatarContainer size={imageSize}>
+            <Avatar src={objectURL || defaultAvatar} layout="fill" />
+          </AvatarContainer>
+        </AvatarWrapper>
+        {isEditing
+          ? (
+            <StyledForm onSubmit={saveChanges}>
+              <ChangeAvatar>
+                <ChangeAvatarInput type="file" accept="image/*" onChange={uploadToClient} />
+                Change photo
+              </ChangeAvatar>
+              <StyledInput value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter your name" />
+              <UploadButton type="submit">Save</UploadButton>
+            </StyledForm>
+          ) : (
+            <>
+              <Title>{name}</Title>
+              <Title>{authUser.email || 'No data'}</Title>
+            </>
+          )}
+      </Container>
+    </Wrapper>
+  );
+};
 
 const Wrapper = styled.div`
   position: absolute;
@@ -78,14 +155,15 @@ const Avatar = styled(Image)`
 
 const StyledForm = styled.form`
   display: flex;
-  justify-content: space-around;
-  width: 60%;
-  margin-bottom: 25px;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 300px;
 `;
 
 const ChangeAvatar = styled.label`
   display: flex;
-  margin: 0;
+  margin: 0 0 30px;
   padding: 10px 15px;
   font-weight: 600;
   font-size: 1em;
@@ -100,10 +178,10 @@ const ChangeAvatarInput = styled.input`
 `;
 
 const UploadButton = styled.button`
-  margin: 0;
+  margin-top: auto;
   padding: 10px 15px;
   font-weight: 600;
-  font-size: 1em;
+  font-size: 1.2em;
   border: none;
   border-radius: 5px;
   box-shadow: 3px 3px 8px #b1b1b1, -3px -3px 8px #ffffff;
@@ -125,76 +203,18 @@ const Message = styled.p`
   color: #010101;
 `;
 
-const Profile = () => {
-  const { user, error, isLoading } = useUser();
-  const [image, setImage] = useState(null);
-  const [objectURL, setObjectURL] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
-
-  const storageRef = firebaseStorage.ref();
-
-  const [users, usersLoading] = useCollection(firebaseFirestore.collection('users'), {});
-
-  const imageSize = 150;
-
-  const uploadToClient = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const i = event.target.files[0];
-      setImage(i);
-      setObjectURL(URL.createObjectURL(i));
-    }
-  };
-
-  const uploadToFirebase = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (image) {
-      const imageRef = storageRef.child(image.name);
-      await imageRef.put(image);
-      const downloadURL = await imageRef.getDownloadURL();
-      try {
-        await firebaseFirestore.collection('users').doc(`${user.email}`).set({ picturePath: downloadURL });
-        alert('Photo uploaded sucessfully');
-      } catch (err) {
-        console.log(err.message);
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (users && !usersLoading && user) {
-      firebaseFirestore.collection('users').doc(`${user.email}`).get()
-        .then((data) => setObjectURL(data.data().picturePath));
-    }
-  }, [users, usersLoading, user]);
-
-  if (isLoading) return <Message>Loading...</Message>
-  if (error) return <Message>{error.message}</Message>
-
-  return (
-    <Wrapper>
-      <Container>
-        <EditBtnContainer onClick={() => setIsEditing((prev) => !prev)} isActive={isEditing}>
-          <Icon name="Edit" color="black" size="large" />
-        </EditBtnContainer>
-        <AvatarWrapper>
-          <AvatarContainer size={imageSize}>
-            <Avatar src={objectURL || defaultAvatar} layout="fill" />
-          </AvatarContainer>
-          {isEditing
-            ? (
-              <StyledForm onSubmit={uploadToFirebase}>
-                <ChangeAvatar>
-                  <ChangeAvatarInput type="file" accept="image/*" onChange={uploadToClient} />
-                  Change photo
-                </ChangeAvatar>
-                <UploadButton type="submit">Save</UploadButton>
-              </StyledForm>
-            ) : null}
-        </AvatarWrapper>
-        <Title>{user.email || 'No data'}</Title>
-      </Container>
-    </Wrapper>
-  );
-};
+const StyledInput = styled.input`
+  width: 100%;
+  padding: 20px;
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #555555;
+  font-style: italic;
+  background: none;
+  outline: none;
+  border: none;
+  border-radius: 25px;
+  box-shadow: inset 8px 8px 8px #cbced1, inset -8px -8px 8px #ffffff;
+`;
 
 export default Profile;
