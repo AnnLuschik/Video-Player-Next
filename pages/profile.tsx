@@ -41,7 +41,7 @@ const Profile = () => {
     }
 
     try {
-      await firebaseFirestore.collection('users').doc(`${authUser.email}`).set({ name: user.name, picturePath: downloadURL });
+      await firebaseFirestore.collection('users').doc(`${authUser.email}`).set({ name, picturePath: downloadURL });
     } catch (err) {
       console.log(err.message);
     }
